@@ -1,16 +1,47 @@
 
 import { ExpandMore } from "@mui/icons-material";
 import { Todo, TodoStatus } from "../../modules/Todo/Todo.types";
-import { Stack, Accordion, AccordionSummary, Checkbox, Typography, AccordionDetails, AccordionActions, Button, Badge, Chip, Divider } from "@mui/material";
-import { useState } from "react";
+import { Stack, Accordion, AccordionSummary, Checkbox, Typography, AccordionDetails, AccordionActions, Button, Badge, Chip, Divider, useColorScheme } from "@mui/material";
 import { formatDate, isDueTomorrow, isOverDue } from "../../utils";
+import { useUpdateTodo } from "src/hooks/useUpdateTodo";
+import { useEffect, useState } from "react";
+import { useTodosContext } from "src/modules/contexts/TodoContext";
 
 export interface TodoListItemProps {
     todo: Todo,
-    onUpdateTodo: (todo: Todo) => void;
 }
 
-export function TodoListItem({todo, onUpdateTodo} : TodoListItemProps) {
+export function TodoListItem({todo} : TodoListItemProps) {
+    const {updateTodo, data } = useUpdateTodo();
+    const { setTodos } = useTodosContext();
+    const [isCompleted, setIsCompleted] = useState<boolean>(todo.status === TodoStatus.COMPLETED);
+    useEffect(() => {
+        if (data != null) {
+            setIsCompleted(data.status === TodoStatus.COMPLETED)
+        }
+    }, [data])
+
+    const onChecked = (event: React.ChangeEvent<HTMLInputElement>) => {
+        event.stopPropagation();
+
+        // optimistic update
+        setTodos((prev) => {
+            return prev.map(t => {
+                if (t.id != todo.id) { return t; }
+                return {
+                    ...t,
+                    status: event.target.checked ? TodoStatus.COMPLETED : TodoStatus.ACTIVE,
+                }
+            })
+        })
+
+        // persist to db
+        updateTodo({
+            ...todo, 
+            status: event.target.checked ? TodoStatus.COMPLETED : TodoStatus.ACTIVE,
+        });
+    }
+
     const dueTomorrow = isDueTomorrow(todo.status, todo.dueDate)
     const overdue = isOverDue(todo.status, todo.dueDate)
 
@@ -19,8 +50,8 @@ export function TodoListItem({todo, onUpdateTodo} : TodoListItemProps) {
                 <AccordionSummary expandIcon={<ExpandMore />}>
                     <Stack  direction="row" alignItems="center" width="100%" gap={1}>
                         <Checkbox 
-                            checked={todo.status === TodoStatus.COMPLETED} 
-                            onChange={(event) => { event.stopPropagation(); onUpdateTodo({...todo, status: event.target.checked ? TodoStatus.COMPLETED : TodoStatus.ACTIVE}) }} 
+                            checked={isCompleted} 
+                            onChange={onChecked} 
                             onClick={(event) => { event.stopPropagation(); } }
                         />
                         <Typography sx={{flex: 1 }}>{todo.title}</Typography>

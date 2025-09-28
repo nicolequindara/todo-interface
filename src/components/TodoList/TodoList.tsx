@@ -2,20 +2,16 @@ import { CreateTodoRequest, Todo, TodoStatus } from "../../modules/Todo/Todo.typ
 import {  Button, CircularProgress, Stack, Typography } from "@mui/material";
 
 import TodoListItem from "./TodoListItem";
-import { useApi } from "../../hooks/useApi";
 import { Add } from "@mui/icons-material";
-import { useEffect, useMemo, useState } from "react";
+import { useMemo, useState } from "react";
 import { AddTodoModal } from "../AddTodoModal/AddTodoModal";
 import { FilterMode, FunctionBar } from "../FunctionBar/FunctionBar";
 import { isOverDue } from "../../utils";
+import { useTodosContext } from "src/modules/contexts/TodoContext";
 
 
 export function TodoList() {
-    const {data, loading, refetch} =  useApi<Todo[]>(`/api/todos`);
-    const [ todos, setTodos ] = useState<Todo[]>([]);
-    useEffect(() => {
-        setTodos(data ?? [])
-    }, [data])
+    const {todos, loading, setTodos} = useTodosContext();
 
     const [addTodoModalOpen, setAddTodoModalOpen ] = useState<boolean>(false);
     const openAddTodoModal = () => { setAddTodoModalOpen(true); }
@@ -32,7 +28,6 @@ export function TodoList() {
         setTodos(todos.concat(todo));
         closeAddTodoModal();
     }
-    
 
     const [filterMode, setFilterMode] = useState<FilterMode>(FilterMode.None);
     const useFilter = (filterMode: FilterMode) => useMemo(() => {
@@ -48,19 +43,11 @@ export function TodoList() {
         }
     }, [todos, filterMode])
 
-    const useUpdateTodo = (todo: Todo) => {
-        console.log('update', JSON.stringify(todo))
-        try {
-            const {loading} = useApi<Todo[]>(`/api/todos/${todo.id}`, {method: 'PUT', body: JSON.stringify(todo)});
-            refetch();
-        } catch(err) {
-        } 
-    }
 
     return (
         <Stack gap={2} p={4} width="80%">
             <TodoListHeader onAddTodo={openAddTodoModal} setFilterMode={(mode: FilterMode) => { setFilterMode(mode)}} filterMode={filterMode} />
-            <TodoListInner loading={loading} todos={useFilter(filterMode)} onUpdateTodo={useUpdateTodo} />
+            <TodoListInner loading={loading} todos={useFilter(filterMode)} />
             <AddTodoModal open={addTodoModalOpen} handleClose={closeAddTodoModal} handleSubmit={onAddTodo}/>
         </Stack>
     )
@@ -70,13 +57,12 @@ export function TodoList() {
 interface TodoListInnerProps {
     todos: Todo[]
     loading: boolean,
-    onUpdateTodo: (todo: Todo) => void;
 }
-function TodoListInner({todos, loading, onUpdateTodo} : TodoListInnerProps) {
+function TodoListInner({todos, loading } : TodoListInnerProps) {
     if (loading) { return <Stack p={4} alignContent="center" alignItems="center"><CircularProgress /></Stack> }
     return (
         <Stack spacing={1}>
-            {todos.map(todo => (<TodoListItem todo={todo} onUpdateTodo={onUpdateTodo} />))}
+            {todos.map(todo => (<TodoListItem todo={todo} />))}
         </Stack>
     )
 }
