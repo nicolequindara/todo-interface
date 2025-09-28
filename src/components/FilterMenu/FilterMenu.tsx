@@ -15,24 +15,12 @@ export enum SortMode {
   ByCreated,
 }
 
-export type FunctionBarProps = FilterMenuProps;
-export function FunctionBar({
-  filterMode = FilterMode.None,
-  setFilterMode,
-}: FunctionBarProps) {
-  return (
-    <Stack direction="row">
-      <FilterMenu filterMode={filterMode} setFilterMode={setFilterMode} />
-    </Stack>
-  );
-}
-
 export interface FilterMenuProps {
   filterMode: FilterMode;
   setFilterMode: (mode: FilterMode) => void;
 }
 
-function FilterMenu({ filterMode, setFilterMode }: FilterMenuProps) {
+export function FilterMenu({ filterMode, setFilterMode }: FilterMenuProps) {
   const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null);
   const open = Boolean(anchorEl);
   const handleClick = (event: React.MouseEvent<HTMLButtonElement>) => {
@@ -50,7 +38,7 @@ function FilterMenu({ filterMode, setFilterMode }: FilterMenuProps) {
   };
 
   return (
-    <div>
+    <Stack direction="row">
       <Button
         variant="text"
         aria-controls={open ? "basic-menu" : undefined}
@@ -83,8 +71,8 @@ function FilterMenu({ filterMode, setFilterMode }: FilterMenuProps) {
           {FILTER_MODE_DISPLAY_TEXT[FilterMode.Overdue]}
         </MenuItem>
       </Menu>
-    </div>
+    </Stack>
   );
 }
 
-export default FunctionBar;
+export default FilterMenu;
