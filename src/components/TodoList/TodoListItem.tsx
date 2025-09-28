@@ -14,12 +14,6 @@ export interface TodoListItemProps {
 export function TodoListItem({todo} : TodoListItemProps) {
     const {updateTodo, data } = useUpdateTodo();
     const { setTodos } = useTodosContext();
-    const [isCompleted, setIsCompleted] = useState<boolean>(todo.status === TodoStatus.COMPLETED);
-    useEffect(() => {
-        if (data != null) {
-            setIsCompleted(data.status === TodoStatus.COMPLETED)
-        }
-    }, [data])
 
     const onChecked = (event: React.ChangeEvent<HTMLInputElement>) => {
         event.stopPropagation();
@@ -50,7 +44,7 @@ export function TodoListItem({todo} : TodoListItemProps) {
                 <AccordionSummary expandIcon={<ExpandMore />}>
                     <Stack  direction="row" alignItems="center" width="100%" gap={1}>
                         <Checkbox 
-                            checked={isCompleted} 
+                            checked={todo.status === TodoStatus.COMPLETED} 
                             onChange={onChecked} 
                             onClick={(event) => { event.stopPropagation(); } }
                         />

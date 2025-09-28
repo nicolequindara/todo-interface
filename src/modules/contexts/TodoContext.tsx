@@ -1,6 +1,6 @@
-import { createContext, useContext, useEffect, useState, ReactNode, useCallback } from "react";
+import { createContext, useContext, useEffect, useState, ReactNode } from "react";
 import { Todo } from "../Todo/Todo.types";
-import { useApi } from "../../hooks/useApi";
+import { useFetchTodos } from "src/hooks/useFetchTodos";
 
 type TodosContextType = {
   todos: Todo[];
@@ -12,13 +12,8 @@ type TodosContextType = {
 const TodosContext = createContext<TodosContextType | undefined>(undefined);
 
 export const TodosProvider = ({ children }: { children: ReactNode }) => {
-  const { fetchData, data, loading, error } = useApi<Todo[]>();
-
+  const { refetch, data, loading, error } = useFetchTodos();
   const [todos, setTodos] = useState<Todo[]>([]);
-
-  const refetch = useCallback(() => {
-    fetchData(`/api/todos`);
-  }, [fetchData]);
 
   // keep local state in sync with fetch
   useEffect(() => {
@@ -33,7 +28,7 @@ export const TodosProvider = ({ children }: { children: ReactNode }) => {
   }, [refetch]);
 
   return (
-    <TodosContext.Provider value={{ todos, loading, error, setTodos }}>
+    <TodosContext.Provider value={{ todos, loading, error, setTodos }} >
       {children}
     </TodosContext.Provider>
   );
