@@ -16,7 +16,7 @@ import { useDeleteTodo } from "src/hooks/useDeleteTodo";
 import { useUpdateTodo } from "src/hooks/useUpdateTodo";
 import { useTodosContext } from "src/modules/contexts/TodoContext";
 import { Todo, TodoStatus } from "../../modules/Todo/Todo.types";
-import { formatDate, isDueTomorrow, isOverDue } from "../../utils";
+import { formatDate, isDueTomorrow, isOverDue } from "../../modules/Todo/utils";
 
 export interface TodoListItemProps {
   todo: Todo;

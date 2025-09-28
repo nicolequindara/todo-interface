@@ -3,7 +3,7 @@ import { TodoStatus } from "../../modules/Todo/Todo.types";
 
 import { useMemo, useState } from "react";
 import { useTodosContext } from "src/modules/contexts/TodoContext";
-import { isOverDue } from "../../utils";
+import { isOverDue } from "../../modules/Todo/utils";
 import { AddTodoModal } from "../AddTodoModal/AddTodoModal";
 import { FilterMode } from "../FilterMenu/FilterMenu";
 import TodoListHeader from "../TodoListHeader/TodoListHeader";

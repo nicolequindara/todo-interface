@@ -1,4 +1,4 @@
-import { TodoStatus } from "./modules/Todo/Todo.types";
+import { TodoStatus } from "./Todo.types";
 
 export function formatDate(date: string | number | Date | null) {
   if (!date) {
@@ -13,7 +13,7 @@ export function formatDate(date: string | number | Date | null) {
 
 export function isDueTomorrow(
   status: TodoStatus,
-  date: string | number | Date | null | undefined,
+  date: string | number | Date | null | undefined
 ) {
   if (!date || status !== TodoStatus.ACTIVE) return false;
 
@@ -32,7 +32,7 @@ export function isDueTomorrow(
 
 export function isOverDue(
   status: TodoStatus,
-  date: string | number | Date | null | undefined,
+  date: string | number | Date | null | undefined
 ) {
   if (!date || status !== TodoStatus.ACTIVE) {
     return false;
