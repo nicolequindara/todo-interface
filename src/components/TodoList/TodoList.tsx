@@ -27,20 +27,20 @@ export function TodoList() {
   };
 
   const [filterMode, setFilterMode] = useState<FilterMode>(FilterMode.None);
-  const useFilter = (filterMode: FilterMode) =>
-    useMemo(() => {
-      switch (filterMode) {
-        case FilterMode.Active:
-          return todos.filter((t) => t.status === TodoStatus.ACTIVE);
-        case FilterMode.Completed:
-          return todos.filter((t) => t.status === TodoStatus.COMPLETED);
-        case FilterMode.Overdue:
-          return todos.filter((t) => isOverDue(t.status, t.dueDate));
-        case FilterMode.None:
-        default:
-          return todos;
-      }
-    }, [filterMode]);
+  const filteredTodos = useMemo(() => {
+    console.log(todos);
+    switch (filterMode) {
+      case FilterMode.Active:
+        return todos.filter((t) => t.status === TodoStatus.ACTIVE);
+      case FilterMode.Completed:
+        return todos.filter((t) => t.status === TodoStatus.COMPLETED);
+      case FilterMode.Overdue:
+        return todos.filter((t) => isOverDue(t.status, t.dueDate));
+      case FilterMode.None:
+      default:
+        return todos;
+    }
+  }, [todos, filterMode]);
 
   return (
     <Stack gap={2} p={4} width="80%">
@@ -51,7 +51,7 @@ export function TodoList() {
         }}
         filterMode={filterMode}
       />
-      <TodoListInner loading={loading} todos={useFilter(filterMode)} />
+      <TodoListInner loading={loading} todos={filteredTodos} />
       <AddTodoModal open={addTodoModalOpen} handleClose={closeAddTodoModal} />
     </Stack>
   );
@@ -72,6 +72,7 @@ function TodoListInnerEmptyState() {
   );
 }
 function TodoListInner({ todos, loading }: TodoListInnerProps) {
+  console.log("TodosListInner", todos);
   if (loading) {
     return (
       <Stack p={4} alignContent="center" alignItems="center">
