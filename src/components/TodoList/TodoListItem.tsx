@@ -48,7 +48,7 @@ export function TodoListItem({ todo }: TodoListItemProps) {
     updateTodo({
       ...todo,
       status: event.target.checked ? TodoStatus.COMPLETED : TodoStatus.ACTIVE,
-    });
+    }); // TODO snackbar on error
   };
 
   const dueTomorrow = isDueTomorrow(todo.status, todo.dueDate);
@@ -119,11 +119,12 @@ export function TodoListActions({ todo }: TodoListActionsProps) {
   const { setTodos } = useTodosContext();
 
   const onDelete = () => {
-    deleteTodo(todo);
+    deleteTodo(todo); // TODO snackbar on error
     setTodos((prev) => {
       return prev.filter((t) => t.id !== todo.id);
     });
   };
+
   return (
     <Stack direction="row" spacing={2} pb={2}>
       <Button sx={{ color: "red" }} onClick={onDelete}>

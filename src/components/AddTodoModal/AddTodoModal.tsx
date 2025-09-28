@@ -50,7 +50,7 @@ export function AddTodoModal({ open, handleClose }: AddTodoModalProps) {
     };
     await createTodo(todo).then(() => {
       refetch();
-    });
+    }); // TODO snackbar on error
     handleClose();
   };
 

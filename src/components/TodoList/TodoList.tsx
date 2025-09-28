@@ -10,7 +10,7 @@ import TodoListHeader from "../TodoListHeader/TodoListHeader";
 import TodoListInner from "./TodoListInner";
 
 export function TodoList() {
-  const { todos, loading } = useTodosContext();
+  const { todos, loading, error } = useTodosContext();
 
   const [addTodoModalOpen, setAddTodoModalOpen] = useState<boolean>(false);
   const openAddTodoModal = () => {
@@ -45,7 +45,7 @@ export function TodoList() {
         }}
         filterMode={filterMode}
       />
-      <TodoListInner loading={loading} todos={filteredTodos} />
+      <TodoListInner loading={loading} todos={filteredTodos} error={error} />
       <AddTodoModal open={addTodoModalOpen} handleClose={closeAddTodoModal} />
     </Stack>
   );
