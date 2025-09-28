@@ -7,6 +7,7 @@ type TodosContextType = {
   loading: boolean;
   error: Error | null;
   setTodos: React.Dispatch<React.SetStateAction<Todo[]>>;
+  refetch: () => void;
 };
 
 const TodosContext = createContext<TodosContextType | undefined>(undefined);
@@ -28,7 +29,7 @@ export const TodosProvider = ({ children }: { children: ReactNode }) => {
   }, [refetch]);
 
   return (
-    <TodosContext.Provider value={{ todos, loading, error, setTodos }} >
+    <TodosContext.Provider value={{ todos, loading, error, setTodos, refetch }} >
       {children}
     </TodosContext.Provider>
   );

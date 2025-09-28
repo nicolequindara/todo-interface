@@ -3,19 +3,13 @@ export enum TodoStatus {
     COMPLETED = 1,
 }
 
-export interface Todo {
-    id: number;
+export interface BaseTodo {
     title: string;
     description?: string;
-    createdDate: string;
-    dueDate?: string;
+    createdDate: Date;
+    dueDate?: Date;
     status: TodoStatus;
 }
-
-export interface CreateTodoRequest {
-    title: string;
-    description?: string;
-    createdDate: string;
-    dueDate?: string;
-    status?: TodoStatus;
+export interface Todo extends BaseTodo {
+    id: number;
 }

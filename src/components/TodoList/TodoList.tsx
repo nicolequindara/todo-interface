@@ -1,4 +1,4 @@
-import { CreateTodoRequest, Todo, TodoStatus } from "../../modules/Todo/Todo.types";
+import { Todo, TodoStatus } from "../../modules/Todo/Todo.types";
 import {  Button, Card, CircularProgress, Stack, Typography } from "@mui/material";
 
 import TodoListItem from "./TodoListItem";
@@ -16,22 +16,9 @@ export function TodoList() {
     const [addTodoModalOpen, setAddTodoModalOpen ] = useState<boolean>(false);
     const openAddTodoModal = () => { setAddTodoModalOpen(true); }
     const closeAddTodoModal = () => {setAddTodoModalOpen(false); }
-    const onAddTodo = (request: CreateTodoRequest) => {
-        var todo: Todo = {
-            id: -1,
-            title: request.title,
-            description: request.description,
-            createdDate: request.createdDate,
-            dueDate: request.dueDate,
-            status: TodoStatus.ACTIVE,
-        }
-        setTodos(todos.concat(todo));
-        closeAddTodoModal();
-    }
 
     const [filterMode, setFilterMode] = useState<FilterMode>(FilterMode.None);
     const useFilter = (filterMode: FilterMode) => useMemo(() => {
-        console.log("Filter by", filterMode);
         switch(filterMode) {
             case FilterMode.Active:
                 return todos.filter(t => t.status == TodoStatus.ACTIVE);
@@ -50,10 +37,9 @@ export function TodoList() {
         <Stack gap={2} p={4} width="80%">
             <TodoListHeader onAddTodo={openAddTodoModal} setFilterMode={(mode: FilterMode) => { setFilterMode(mode)}} filterMode={filterMode} />
             <TodoListInner loading={loading} todos={useFilter(filterMode)} />
-            <AddTodoModal open={addTodoModalOpen} handleClose={closeAddTodoModal} handleSubmit={onAddTodo}/>
+            <AddTodoModal open={addTodoModalOpen} handleClose={closeAddTodoModal} />
         </Stack>
     )
-
 }
 
 interface TodoListInnerProps {

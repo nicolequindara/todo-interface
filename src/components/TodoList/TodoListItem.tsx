@@ -1,17 +1,19 @@
 
 import { Error, ExpandMore, Warning, WashRounded } from "@mui/icons-material";
 import { Todo, TodoStatus } from "../../modules/Todo/Todo.types";
-import { Stack, Accordion, AccordionSummary, Checkbox, Typography, AccordionDetails, AccordionActions, Button, Badge, Chip, Divider, useColorScheme, Tooltip } from "@mui/material";
+import { Stack, Accordion, AccordionSummary, Checkbox, Typography, AccordionDetails, AccordionActions, Button, Badge, Chip, Divider, useColorScheme, Tooltip, Dialog, DialogTitle, DialogActions } from "@mui/material";
 import { formatDate, isDueTomorrow, isOverDue } from "../../utils";
 import { useUpdateTodo } from "src/hooks/useUpdateTodo";
 import { useTodosContext } from "src/modules/contexts/TodoContext";
+import { useState } from "react";
+import { useDeleteTodo } from "src/hooks/useDeleteTodo";
 
 export interface TodoListItemProps {
     todo: Todo,
 }
 
 export function TodoListItem({todo} : TodoListItemProps) {
-    const {updateTodo, data } = useUpdateTodo();
+    const {updateTodo } = useUpdateTodo();
     const { setTodos } = useTodosContext();
 
     const onChecked = (event: React.ChangeEvent<HTMLInputElement>) => {
@@ -69,14 +71,30 @@ export function TodoListItem({todo} : TodoListItemProps) {
                 </Stack>
             </AccordionDetails>
             <AccordionActions>
-                <Stack direction="row" spacing={2} pb={2}>
-                    <Button variant="contained">Edit</Button>
-                    <Button sx={{color: "red"}}>Delete</Button>
-                </Stack>
+                <TodoListActions todo={todo} />
             </AccordionActions>
             </Accordion>
     )
+}
 
+interface TodoListActionsProps {
+    todo: Todo;
+}
+export function TodoListActions({ todo }: TodoListActionsProps) {
+    const { deleteTodo } = useDeleteTodo();
+    const { todos, setTodos } = useTodosContext();
+
+    const onDelete = () => {
+        deleteTodo(todo);
+        setTodos((prev) => {
+            return prev.filter(t => t.id != todo.id);
+        })
+    }
+    return (
+        <Stack direction="row" spacing={2} pb={2}>
+            <Button sx={{color: "red"}} onClick={onDelete} >Delete</Button>
+        </Stack>
+    )
 }
 
 export default TodoListItem;
