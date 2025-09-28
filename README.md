@@ -1,46 +1,144 @@
-# Getting Started with Create React App
+# To Do Task Management App
 
-This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
+## Requirements
 
-## Available Scripts
+### Assumptions
+- The application will be used on desktop computers, accessible from the internet.
+- Users will only see their own tasks.
+- Users will manage daily tasks — the number of tasks is expected to be in the dozens rather than thousands or millions.
 
-In the project directory, you can run:
+### Functional Requirements
 
-### `npm start`
+#### Task Management
+- Create To Dos (title, optional description)
+- Complete, un-do complete, and delete To Dos
+- Assign due dates to To Dos
 
-Runs the app in the development mode.\
-Open [http://localhost:3000](http://localhost:3000) to view it in the browser.
+#### To Do Views
+- Sort by due date and status
+- Quickly see overdue To Dos or pending To Dos
+- Filter by status (complete/active) or overdue To Dos
 
-The page will reload if you make edits.\
-You will also see any lint errors in the console.
+#### Below the Fold Features
+- Accounts
+- Authentication (multi-factor or otherwise)
+- Recurring tasks
+- Attaching images or files
+- Notifications
+- Integrations with calendars or inboxes
+- Categories or folders
 
-### `npm test`
+### Non-Functional Requirements
+- Performant — quick loading and low request latency
+- Prioritize consistency over availability
 
-Launches the test runner in the interactive watch mode.\
-See the section about [running tests](https://facebook.github.io/create-react-app/docs/running-tests) for more information.
+---
 
-### `npm run build`
+## UX
+![Alt text](./ux.png "UX")
 
-Builds the app for production to the `build` folder.\
-It correctly bundles React in production mode and optimizes the build for the best performance.
+## Best Practices
 
-The build is minified and the filenames include the hashes.\
-Your app is ready to be deployed!
+### API
+- Thin controllers that manage only requests and responses.
+- Service methods encapsulate business logic.
+- RESTful naming conventions (plural nouns, proper status codes)
+- EF models are separate from DTOs.
+- Dependency injection for low coupling, high flexibility, and easier testing.
+- Asynchronous calls to avoid blocking.
 
-See the section about [deployment](https://facebook.github.io/create-react-app/docs/deployment) for more information.
+### UI
+- Modular structure: organize components, modules, and hooks.
+- Local state management (avoid over-engineering with external libraries).
+- Avoid prop drilling using contexts.
+- APIs called from hooks to isolate data fetching.
+- Memoization for performance.
+- Use `react-hook-form` for form validation and submission.
+- Build components using Material UI.
 
-### `npm run eject`
+---
 
-**Note: this is a one-way operation. Once you `eject`, you can’t go back!**
+## How to Scale and Become Production-Ready
 
-If you aren’t satisfied with the build tool and configuration choices, you can `eject` at any time. This command will remove the single build dependency from your project.
+### Architecture
+![Alt text](./architecture.png "Architecture")
 
-Instead, it will copy all the configuration files and the transitive dependencies (webpack, Babel, ESLint, etc) right into your project so you have full control over them. All of the commands except `eject` will still work, but they will point to the copied scripts so you can tweak them. At this point you’re on your own.
+#### Database
+- Move over from EF In-Memory Persistence to a real database.  Since none of the Todo operations are strictly transactional and the singular model is not relational, there's not a strong requirement to use SQL, however we stated in our assumptions that we favor consistency over eventual consistency.  While NoSQL is better for scale and schema flexibility, we're not assuming millions of daily average users.  SQL is a fine choice for this application, especially as SQL Server is native to the .NET Framework.
+- Indices for performance - these should be created based on access patterns.  We don't have a requirement to search for tasks so we don't have any complicated queries.  In fact, our filtering is executed on the front-end.  To scale and handle a larger number of tasks, we may choose to sort or filter on title, status, description, or dates; these would be indicative of our indices.
+- We could use a master-slave strategy to ensure redundancy and read performance.
 
-You don’t have to ever use `eject`. The curated feature set is suitable for small and middle deployments, and you shouldn’t feel obligated to use this feature. However we understand that this tool wouldn’t be useful if you couldn’t customize it when you are ready for it.
 
-## Learn More
+#### Caching
+- Use Redis or in-memory caching for frequent queries.
+- Implement TTL and cache invalidation strategy (LRU).
+- Use local storage for offline mode.
 
-You can learn more in the [Create React App documentation](https://facebook.github.io/create-react-app/docs/getting-started).
+#### Media
+- Use S3 for file and photo attachments.
+- Utilize a CDN for media delivery.
+- Track metadata in the database.
 
-To learn React, check out the [React documentation](https://reactjs.org/).
+#### API Gateway
+- Introduce an API Gateway to handle load balancing and rate limiting
+
+#### Multiple instances
+- We can introduce multiple instances of these components, especially the application server, to handle the enhanced scale load.
+
+### Security
+- Rate limiting
+- Authentication
+- Use HTTPS
+- API versioning (e.g., `/api/v1/todos`)
+
+### Documentation
+- Swagger for endpoints
+- Comprehensive README files
+
+### Deployments
+- CI/CD process (build, test, deployment automation)
+- Staging and production environments
+- Containerized deployment for scalability
+
+### Monitoring, Observability, and Analytics
+- Logging improvements
+- Sentry for alerts
+- NewRelic/Grafana for monitoring
+
+### Testing
+- Unit tests for front-end and back-end
+- Integration tests for API contracts
+- End-to-end tests for features
+- QA procedures
+
+### Look and Feel
+- Theming and styling to avoid CSS pollution
+- Routing and multiple pages
+- Accessibility
+- Storybook for design system library
+
+### Improved Features
+- Implement below-the-fold features
+
+---
+
+## Setup
+
+### `todo-api`
+https://github.com/nicolequindara/todo-api
+1. Install the .NET SDK & Runtime.
+2. Build the app with `dotnet build`
+
+### `todo-interface`
+https://github.com/nicolequindara/todo-interface
+1. Install dependencies with `npm ci`
+2. Build the app with `npm run build`
+3. Run the app with `npm run start`
+4. The terminal will confirm that the UI is running on http://localhost:3000/
+
+
+## Demo
+1. The application displays each todo as an accordion.
+2. Click on the chevron to the right of each todo to expand the accordion.  This will display a description (if one exists) as well as other metadata like the creation date and due date (if one was set).
+3. Click the Delete button inside the todo's accordion to delete a todo.
+4. Click the Add button to add a new todo.  The form will validate the inputs prior to submission.
