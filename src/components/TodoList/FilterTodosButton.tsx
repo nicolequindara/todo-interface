@@ -15,9 +15,9 @@ export default function FilterTodosButton() {
     <div>
       <Button
         id="basic-button"
-        aria-controls={open ? 'basic-menu' : undefined}
+        aria-controls={open ? "basic-menu" : undefined}
         aria-haspopup="true"
-        aria-expanded={open ? 'true' : undefined}
+        aria-expanded={open ? "true" : undefined}
         onClick={handleClick}
       >
         Filter
@@ -29,7 +29,7 @@ export default function FilterTodosButton() {
         onClose={handleClose}
         slotProps={{
           list: {
-            'aria-labelledby': 'basic-button',
+            "aria-labelledby": "basic-button",
           },
         }}
       >

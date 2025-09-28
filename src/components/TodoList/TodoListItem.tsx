@@ -1,100 +1,136 @@
-
-import { Error, ExpandMore, Warning, WashRounded } from "@mui/icons-material";
-import { Todo, TodoStatus } from "../../modules/Todo/Todo.types";
-import { Stack, Accordion, AccordionSummary, Checkbox, Typography, AccordionDetails, AccordionActions, Button, Badge, Chip, Divider, useColorScheme, Tooltip, Dialog, DialogTitle, DialogActions } from "@mui/material";
-import { formatDate, isDueTomorrow, isOverDue } from "../../utils";
+import { Error, ExpandMore, Warning } from "@mui/icons-material";
+import {
+  Accordion,
+  AccordionActions,
+  AccordionDetails,
+  AccordionSummary,
+  Button,
+  Checkbox,
+  Chip,
+  Divider,
+  Stack,
+  Tooltip,
+  Typography,
+} from "@mui/material";
+import { useDeleteTodo } from "src/hooks/useDeleteTodo";
 import { useUpdateTodo } from "src/hooks/useUpdateTodo";
 import { useTodosContext } from "src/modules/contexts/TodoContext";
-import { useState } from "react";
-import { useDeleteTodo } from "src/hooks/useDeleteTodo";
+import { Todo, TodoStatus } from "../../modules/Todo/Todo.types";
+import { formatDate, isDueTomorrow, isOverDue } from "../../utils";
 
 export interface TodoListItemProps {
-    todo: Todo,
+  todo: Todo;
 }
 
-export function TodoListItem({todo} : TodoListItemProps) {
-    const {updateTodo } = useUpdateTodo();
-    const { setTodos } = useTodosContext();
+export function TodoListItem({ todo }: TodoListItemProps) {
+  const { updateTodo } = useUpdateTodo();
+  const { setTodos } = useTodosContext();
 
-    const onChecked = (event: React.ChangeEvent<HTMLInputElement>) => {
-        event.stopPropagation();
+  const onChecked = (event: React.ChangeEvent<HTMLInputElement>) => {
+    event.stopPropagation();
 
-        // optimistic update
-        setTodos((prev) => {
-            return prev.map(t => {
-                if (t.id != todo.id) { return t; }
-                return {
-                    ...t,
-                    status: event.target.checked ? TodoStatus.COMPLETED : TodoStatus.ACTIVE,
-                }
-            })
-        })
+    // optimistic update
+    setTodos((prev) => {
+      return prev.map((t) => {
+        if (t.id !== todo.id) {
+          return t;
+        }
+        return {
+          ...t,
+          status: event.target.checked
+            ? TodoStatus.COMPLETED
+            : TodoStatus.ACTIVE,
+        };
+      });
+    });
 
-        // persist to db
-        updateTodo({
-            ...todo, 
-            status: event.target.checked ? TodoStatus.COMPLETED : TodoStatus.ACTIVE,
-        });
-    }
+    // persist to db
+    updateTodo({
+      ...todo,
+      status: event.target.checked ? TodoStatus.COMPLETED : TodoStatus.ACTIVE,
+    });
+  };
 
-    const dueTomorrow = isDueTomorrow(todo.status, todo.dueDate)
-    const overdue = isOverDue(todo.status, todo.dueDate)
+  const dueTomorrow = isDueTomorrow(todo.status, todo.dueDate);
+  const overdue = isOverDue(todo.status, todo.dueDate);
 
-    return (
-            <Accordion>
-                <AccordionSummary expandIcon={<ExpandMore />}>
-                    <Stack  direction="row" alignItems="center" width="100%" gap={1}>
-                        <Checkbox 
-                            checked={todo.status === TodoStatus.COMPLETED} 
-                            onChange={onChecked} 
-                            onClick={(event) => { event.stopPropagation(); } }
-                        />
-                        <Typography sx={{flex: 1 }} variant="body1">{todo.title}</Typography>
-                        {overdue && (
-                            <Tooltip title="Overdue"><Chip label={<Error sx={{height:"18px"}}/>} sx={{backgroundColor: "red", color: "white"}}/></Tooltip>
-                        )}
-                        {dueTomorrow && (
-                            <Tooltip title="Due tomorrow"><Chip label={<Warning sx={{height:"18px"}}/>}sx={{backgroundColor: "orange", color: "white"}}/></Tooltip>
-                        )}
-                    </Stack>
-                </AccordionSummary>
-            <AccordionDetails>
-                <Stack gap={1} px={2}>
-                    <Typography variant="body2" >{todo.description}</Typography>
-                    <Divider sx={{mt:2}} />
-                    <Typography fontSize={12} variant="subtitle2" color="#A9A9A9">
-                        Created on {formatDate(todo.createdDate)}
-                    </Typography>
-                    {todo.dueDate && (<Typography fontSize={12} variant="subtitle2" color={(dueTomorrow || overdue) ? "red" :  "#A9A9A9"} >
-                        Due on {formatDate(todo.dueDate)}
-                    </Typography>)}
-                </Stack>
-            </AccordionDetails>
-            <AccordionActions>
-                <TodoListActions todo={todo} />
-            </AccordionActions>
-            </Accordion>
-    )
+  return (
+    <Accordion>
+      <AccordionSummary expandIcon={<ExpandMore />}>
+        <Stack direction="row" alignItems="center" width="100%" gap={1}>
+          <Checkbox
+            checked={todo.status === TodoStatus.COMPLETED}
+            onChange={onChecked}
+            onClick={(event) => {
+              event.stopPropagation();
+            }}
+          />
+          <Typography sx={{ flex: 1 }} variant="body1">
+            {todo.title}
+          </Typography>
+          {overdue && (
+            <Tooltip title="Overdue">
+              <Chip
+                label={<Error sx={{ height: "18px" }} />}
+                sx={{ backgroundColor: "red", color: "white" }}
+              />
+            </Tooltip>
+          )}
+          {dueTomorrow && (
+            <Tooltip title="Due tomorrow">
+              <Chip
+                label={<Warning sx={{ height: "18px" }} />}
+                sx={{ backgroundColor: "orange", color: "white" }}
+              />
+            </Tooltip>
+          )}
+        </Stack>
+      </AccordionSummary>
+      <AccordionDetails>
+        <Stack gap={1} px={2}>
+          <Typography variant="body2">{todo.description}</Typography>
+          <Divider sx={{ mt: 2 }} />
+          <Typography fontSize={12} variant="subtitle2" color="#A9A9A9">
+            Created on {formatDate(todo.createdDate)}
+          </Typography>
+          {todo.dueDate && (
+            <Typography
+              fontSize={12}
+              variant="subtitle2"
+              color={dueTomorrow || overdue ? "red" : "#A9A9A9"}
+            >
+              Due on {formatDate(todo.dueDate)}
+            </Typography>
+          )}
+        </Stack>
+      </AccordionDetails>
+      <AccordionActions>
+        <TodoListActions todo={todo} />
+      </AccordionActions>
+    </Accordion>
+  );
 }
 
 interface TodoListActionsProps {
-    todo: Todo;
+  todo: Todo;
 }
 export function TodoListActions({ todo }: TodoListActionsProps) {
-    const { deleteTodo } = useDeleteTodo();
-    const { todos, setTodos } = useTodosContext();
+  const { deleteTodo } = useDeleteTodo();
+  const { setTodos } = useTodosContext();
 
-    const onDelete = () => {
-        deleteTodo(todo);
-        setTodos((prev) => {
-            return prev.filter(t => t.id != todo.id);
-        })
-    }
-    return (
-        <Stack direction="row" spacing={2} pb={2}>
-            <Button sx={{color: "red"}} onClick={onDelete} >Delete</Button>
-        </Stack>
-    )
+  const onDelete = () => {
+    deleteTodo(todo);
+    setTodos((prev) => {
+      return prev.filter((t) => t.id !== todo.id);
+    });
+  };
+  return (
+    <Stack direction="row" spacing={2} pb={2}>
+      <Button sx={{ color: "red" }} onClick={onDelete}>
+        Delete
+      </Button>
+    </Stack>
+  );
 }
 
 export default TodoListItem;

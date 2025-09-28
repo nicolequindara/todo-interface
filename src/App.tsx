@@ -1,10 +1,9 @@
-import TodoList from './components/TodoList/TodoList';
-import './App.css';
-import { Stack } from '@mui/material';
-
+import TodoList from "./components/TodoList/TodoList";
+import "./App.css";
+import { Stack } from "@mui/material";
 
 import { createTheme, ThemeProvider } from "@mui/material/styles";
-import { TodosProvider } from './modules/contexts/TodoContext';
+import { TodosProvider } from "./modules/contexts/TodoContext";
 
 const theme = createTheme({
   typography: {
@@ -12,13 +11,12 @@ const theme = createTheme({
   },
 });
 
-
 function App() {
   return (
     <ThemeProvider theme={theme}>
       <TodosProvider>
         <Stack className="App" alignItems="center" justifyItems="center">
-        <TodoList />
+          <TodoList />
         </Stack>
       </TodosProvider>
     </ThemeProvider>

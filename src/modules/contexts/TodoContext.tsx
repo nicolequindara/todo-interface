@@ -1,4 +1,10 @@
-import { createContext, useContext, useEffect, useState, ReactNode } from "react";
+import {
+  createContext,
+  useContext,
+  useEffect,
+  useState,
+  ReactNode,
+} from "react";
 import { Todo } from "../Todo/Todo.types";
 import { useFetchTodos } from "src/hooks/useFetchTodos";
 
@@ -29,7 +35,7 @@ export const TodosProvider = ({ children }: { children: ReactNode }) => {
   }, [refetch]);
 
   return (
-    <TodosContext.Provider value={{ todos, loading, error, setTodos, refetch }} >
+    <TodosContext.Provider value={{ todos, loading, error, setTodos, refetch }}>
       {children}
     </TodosContext.Provider>
   );
