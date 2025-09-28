@@ -11,6 +11,7 @@ import { AdapterDayjs } from "@mui/x-date-pickers/AdapterDayjs";
 import { DatePicker } from "@mui/x-date-pickers/DatePicker";
 import { LocalizationProvider } from "@mui/x-date-pickers/LocalizationProvider";
 import dayjs, { Dayjs } from "dayjs";
+import { useEffect } from "react";
 import { Controller, SubmitHandler, useForm } from "react-hook-form";
 import { BaseTodo, TodoStatus } from "src/modules/Todo/Todo.types";
 import { useTodosContext } from "src/modules/contexts/TodoContext";
@@ -29,14 +30,17 @@ interface TodoFormShape {
 
 export function AddTodoModal({ open, handleClose }: AddTodoModalProps) {
   const { refetch } = useTodosContext();
-  const { control, handleSubmit } = useForm<TodoFormShape>({
+  const { control, handleSubmit, reset } = useForm<TodoFormShape>({
     defaultValues: {
       title: "",
     },
     mode: "onSubmit", // validate on submit
   });
-  const { createTodo } = useCreateTodo();
+  useEffect(() => {
+    reset();
+  }, [open, reset]);
 
+  const { createTodo } = useCreateTodo();
   const submitHandler: SubmitHandler<TodoFormShape> = async (data) => {
     var todo: BaseTodo = {
       ...data,
