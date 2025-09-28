@@ -1,5 +1,5 @@
 import { CreateTodoRequest, Todo, TodoStatus } from "../../modules/Todo/Todo.types";
-import {  Button, CircularProgress, Stack, Typography } from "@mui/material";
+import {  Button, Card, CircularProgress, Stack, Typography } from "@mui/material";
 
 import TodoListItem from "./TodoListItem";
 import { Add } from "@mui/icons-material";
@@ -33,6 +33,8 @@ export function TodoList() {
     const useFilter = (filterMode: FilterMode) => useMemo(() => {
         console.log("Filter by", filterMode);
         switch(filterMode) {
+            case FilterMode.Active:
+                return todos.filter(t => t.status == TodoStatus.ACTIVE);
             case FilterMode.Completed:
                 return todos.filter(t => t.status == TodoStatus.COMPLETED);
             case FilterMode.Overdue:
@@ -58,8 +60,24 @@ interface TodoListInnerProps {
     todos: Todo[]
     loading: boolean,
 }
+
+function TodoListInnerEmptyState() {
+    return (
+        <Card>
+            <Stack p={8} alignItems="center" justifyContent="center">
+                <Typography>No Tasks</Typography>
+            </Stack>
+        </Card>
+    )
+}
 function TodoListInner({todos, loading } : TodoListInnerProps) {
     if (loading) { return <Stack p={4} alignContent="center" alignItems="center"><CircularProgress /></Stack> }
+
+    if (todos.length == 0) {
+        return (
+            <TodoListInnerEmptyState />
+        )
+    }
     return (
         <Stack spacing={1}>
             {todos.map(todo => (<TodoListItem todo={todo} />))}

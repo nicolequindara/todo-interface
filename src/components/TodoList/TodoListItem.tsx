@@ -1,10 +1,9 @@
 
-import { ExpandMore } from "@mui/icons-material";
+import { Error, ExpandMore, Warning, WashRounded } from "@mui/icons-material";
 import { Todo, TodoStatus } from "../../modules/Todo/Todo.types";
-import { Stack, Accordion, AccordionSummary, Checkbox, Typography, AccordionDetails, AccordionActions, Button, Badge, Chip, Divider, useColorScheme } from "@mui/material";
+import { Stack, Accordion, AccordionSummary, Checkbox, Typography, AccordionDetails, AccordionActions, Button, Badge, Chip, Divider, useColorScheme, Tooltip } from "@mui/material";
 import { formatDate, isDueTomorrow, isOverDue } from "../../utils";
 import { useUpdateTodo } from "src/hooks/useUpdateTodo";
-import { useEffect, useState } from "react";
 import { useTodosContext } from "src/modules/contexts/TodoContext";
 
 export interface TodoListItemProps {
@@ -48,18 +47,18 @@ export function TodoListItem({todo} : TodoListItemProps) {
                             onChange={onChecked} 
                             onClick={(event) => { event.stopPropagation(); } }
                         />
-                        <Typography sx={{flex: 1 }}>{todo.title}</Typography>
+                        <Typography sx={{flex: 1 }} variant="body1">{todo.title}</Typography>
                         {overdue && (
-                            <Chip label="Overdue" sx={{backgroundColor: "red", color: "white"}}/>
+                            <Tooltip title="Overdue"><Chip label={<Error sx={{height:"18px"}}/>} sx={{backgroundColor: "red", color: "white"}}/></Tooltip>
                         )}
                         {dueTomorrow && (
-                            <Chip label="Due Tomorrow" sx={{backgroundColor: "orange", color: "white"}}/>
+                            <Tooltip title="Due tomorrow"><Chip label={<Warning sx={{height:"18px"}}/>}sx={{backgroundColor: "orange", color: "white"}}/></Tooltip>
                         )}
                     </Stack>
                 </AccordionSummary>
             <AccordionDetails>
                 <Stack gap={1} px={2}>
-                    <Typography variant="body1" >{todo.description}</Typography>
+                    <Typography variant="body2" >{todo.description}</Typography>
                     <Divider sx={{mt:2}} />
                     <Typography fontSize={12} variant="subtitle2" color="#A9A9A9">
                         Created on {formatDate(todo.createdDate)}

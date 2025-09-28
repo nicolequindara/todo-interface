@@ -4,6 +4,7 @@ import { useState } from "react";
 
 export enum FilterMode {
     None,
+    Active,
     Overdue,
     Completed
 }
@@ -41,7 +42,8 @@ function FilterMenu({filterMode, setFilterMode}: FilterMenuProps) {
   const FILTER_MODE_DISPLAY_TEXT: Record<FilterMode, String> = {
     [FilterMode.None]: "Filter",
     [FilterMode.Completed]: "Completed",
-    [FilterMode.Overdue]: "Overdue"
+    [FilterMode.Overdue]: "Overdue",
+    [FilterMode.Active]: "Active",
   }
 
   return (
@@ -68,6 +70,7 @@ function FilterMenu({filterMode, setFilterMode}: FilterMenuProps) {
         }}
       >
         <MenuItem onClick={() => setFilterMode(FilterMode.None)}>None</MenuItem>
+        <MenuItem onClick={() => setFilterMode(FilterMode.Active)}>{FILTER_MODE_DISPLAY_TEXT[FilterMode.Active]}</MenuItem>
         <MenuItem onClick={() => setFilterMode(FilterMode.Completed)}>{FILTER_MODE_DISPLAY_TEXT[FilterMode.Completed]}</MenuItem>
         <MenuItem onClick={() => setFilterMode(FilterMode.Overdue)}>{FILTER_MODE_DISPLAY_TEXT[FilterMode.Overdue]}</MenuItem>
       </Menu>
