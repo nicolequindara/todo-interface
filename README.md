@@ -126,8 +126,9 @@
 
 ### `todo-api`
 https://github.com/nicolequindara/todo-api
-1. Install the .NET SDK & Runtime.
+1. Install the .NET SDK & Runtime (`brew install dotnet`)
 2. Build the app with `dotnet build`
+3. Run the app with `dotnet run`
 
 ### `todo-interface`
 https://github.com/nicolequindara/todo-interface
